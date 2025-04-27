@@ -40,25 +40,36 @@ namespace RolesApi.Migrations
 
             modelBuilder.Entity("RolesApi.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstLastName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SecondLastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SecondName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserId");
 
                     b.ToTable("Users");
                 });
