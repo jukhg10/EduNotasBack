@@ -1,8 +1,12 @@
-﻿namespace RolesApi.Models
+﻿using System.ComponentModel.DataAnnotations;    // ← add this
+namespace RolesApi.Models
 {
     public class UserRole
     {
-        public int UserId { get; set; }   // User Identifier
-        public int RoleId { get; set; }   // Linked Role Identifier
+        [Key]                                   // ← decorate the PK
+        public int Id { get; set; }
+
+        public int UserId { get; set; }
+        public int RoleId { get; set; }
     }
 }
