@@ -16,6 +16,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocal3700", policy =>
+        policy
+          .WithOrigins("http://localhost:3700")
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials()
+    );
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -50,7 +61,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowLocal3700");
 app.UseAuthentication();
 app.UseAuthorization();
 
