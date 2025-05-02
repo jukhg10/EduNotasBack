@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "CsqLni7RIzj+7pUC5z0OtCQlnLKALbNaNxqqUqtHZ1A=",
+  "Hash": "UK+rbl7IUw3AMEjRsBARSoAhVgYbR6V03+i4SmKLH0Q=",
   "Source": "RolesApi",
   "BasePath": "_content/RolesApi",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }
