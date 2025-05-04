@@ -1,72 +1,52 @@
 ﻿pipeline {
-    agent any
+  agent any
 
-    environment {
-        RESOURCE_GROUP = 'edunotas'
-        APP_NAME = 'edunotas-back'
-        TENANT_ID = 'cba97d17-fa68-4044-96f8-3ac26469a389'
-        SUBSCRIPTION_ID = 'e8381082-e03f-4d7c-8155-4bc17503a57'
+  stages {
+    stage('Build & Deploy') {
+      agent {
+        docker { 
+          image 'mcr.microsoft.com/dotnet/sdk:8.0' 
+          args '-u root'         // para que pueda zipper y usar az cli si lo instalas ahí
+        }
+      }
+      environment {
+        AZURE_CREDENTIALS = credentials('90332e90-90c3-431e-9a4c-ca08a9b67d5f')
+        RESOURCE_GROUP   = 'edunotas'
+        APP_NAME         = 'edunotas-back'
+        TENANT_ID        = 'cba97d17-fa68-4044-96f8-3ac26469a389'
+        SUBSCRIPTION_ID  = 'e8381082-e03f-4d7c-8155-4bc17503a57'
+      }
+      stages {
+        stage('Restore') {
+          steps { sh 'dotnet restore' }
+        }
+        stage('Build') {
+          steps { sh 'dotnet build --configuration Release --no-restore' }
+        }
+        stage('Publish') {
+          steps { sh 'dotnet publish --configuration Release --no-restore --output ./publish' }
+        }
+        stage('Deploy') {
+          steps {
+            // si azure cli no está, instala rápido (sin persistir)
+            sh '''
+              apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+              curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft-archive-keyring.gpg
+              echo "deb [signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
+                > /etc/apt/sources.list.d/azure-cli.list
+              apt-get update && apt-get install -y azure-cli
+            '''
+            withCredentials([azureServicePrincipal('90332e90-90c3-431e-9a4c-ca08a9b67d5f')]) {
+              sh '''
+                az login --service-principal -u $AZURE_CREDENTIALS_USR -p $AZURE_CREDENTIALS_PSW --tenant $TENANT_ID
+                az account set --subscription $SUBSCRIPTION_ID
+                cd publish && zip -r ../app.zip . && cd ..
+                az webapp deployment source config-zip --resource-group $RESOURCE_GROUP --name $APP_NAME --src app.zip
+              '''
+            }
+          }
+        }
+      }
     }
-
-    stages {
-        stage('Clonar Repositorio') {
-            steps {
-                git branch: 'main', url: 'https://github.com/jukhg10/EduNotasBack.git'
-            }
-        }
-
-        stage('Restaurar Dependencias') {
-            steps {
-                sh 'dotnet restore'
-            }
-        }
-
-        stage('Compilar') {
-            steps {
-                sh 'dotnet build --configuration Release --no-restore'
-            }
-        }
-
-        stage('Publicar') {
-            steps {
-                sh 'dotnet publish --configuration Release --no-restore --output ./publish'
-            }
-        }
-
-        stage('Desplegar a Azure') {
-            steps {
-                withCredentials([azureServicePrincipal('b67c5787-3a3b-434a-826e-63cd5730a744')]) {
-                    sh '''
-                        echo "Iniciando sesión en Azure..."
-                        az login --service-principal -u $AZURE_CREDENTIALS_USR -p $AZURE_CREDENTIALS_PSW --tenant $TENANT_ID > /dev/null
-
-                        echo "Seleccionando suscripción..."
-                        az account set --subscription $SUBSCRIPTION_ID
-
-                        echo "Comprimiendo archivos para despliegue..."
-                        cd publish
-                        zip -r ../app.zip .
-                        cd ..
-
-                        echo "Desplegando a Azure Web App..."
-                        az webapp deployment source config-zip \
-                          --resource-group $RESOURCE_GROUP \
-                          --name $APP_NAME \
-                          --src app.zip
-
-                        echo "Despliegue completado exitosamente."
-                    '''
-                }
-            }
-        }
-    }
-
-    post {
-        failure {
-            echo " Error en el pipeline. Revisa los logs para más detalles."
-        }
-        success {
-            echo " Pipeline ejecutado correctamente. Cambios desplegados a Azure."
-        }
-    }
+  }
 }
