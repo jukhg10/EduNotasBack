@@ -3,7 +3,7 @@
   stages {
     stage('Hello') {
       steps {
-        echo '¡Hola mundo!'
+        echo '¡Hola a todos!'
       }
     }
   }
