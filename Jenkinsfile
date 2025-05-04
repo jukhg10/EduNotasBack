@@ -10,7 +10,7 @@
         }
       }
       environment {
-        AZURE_CREDENTIALS = credentials('90332e90-90c3-431e-9a4c-ca08a9b67d5f')
+        AZURE_CREDENTIALS = credentials('b67c5787-3a3b-434a-826e-63cd5730a744')
         RESOURCE_GROUP   = 'edunotas'
         APP_NAME         = 'edunotas-back'
         TENANT_ID        = 'cba97d17-fa68-4044-96f8-3ac26469a389'
@@ -36,7 +36,7 @@
                 > /etc/apt/sources.list.d/azure-cli.list
               apt-get update && apt-get install -y azure-cli
             '''
-            withCredentials([azureServicePrincipal('90332e90-90c3-431e-9a4c-ca08a9b67d5f')]) {
+            withCredentials([azureServicePrincipal('b67c5787-3a3b-434a-826e-63cd5730a744')]) {
               sh '''
                 az login --service-principal -u $AZURE_CREDENTIALS_USR -p $AZURE_CREDENTIALS_PSW --tenant $TENANT_ID
                 az account set --subscription $SUBSCRIPTION_ID
