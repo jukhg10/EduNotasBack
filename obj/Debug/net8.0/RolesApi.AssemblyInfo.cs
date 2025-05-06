@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RolesApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a01ba0bae53bf8e2c2d9eeaf0c8548197477788e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19686e12d2f6445d8ec165d9b73254df54b1c614")]
 [assembly: System.Reflection.AssemblyProductAttribute("RolesApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RolesApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

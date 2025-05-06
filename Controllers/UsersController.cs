@@ -95,6 +95,11 @@ namespace RolesApi.Controllers
 
             return Ok(users);
         }
+        [HttpGet("Hola")]
+        public IActionResult Hola()
+        {
+            return Ok("Hola desde el controlador de usuarios");
+        }
 
         /// <summary>Devuelve un usuario por ID.</summary>
         [HttpGet("{id:int}")]
