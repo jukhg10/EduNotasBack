@@ -39,14 +39,14 @@ namespace RolesApi.Controllers
         /// <summary>Registra un nuevo usuario.</summary>
         [HttpPost("register")]
         [SwaggerResponse(201, "Creado", typeof(UserResponseDto))]
-        [SwaggerResponse(400, "Datos inv√°lidos")]
+        [SwaggerResponse(400, "Datos inv·lidos")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-                return BadRequest(new { message = "El correo ya est√° registrado." });
+                return BadRequest(new { message = "El correo ya est· registrado." });
 
             var user = new User
             {
@@ -126,7 +126,7 @@ namespace RolesApi.Controllers
         /// <summary>Actualiza datos de un usuario.</summary>
         [HttpPut("{id:int}")]
         [SwaggerResponse(200, "OK", typeof(UserResponseDto))]
-        [SwaggerResponse(400, "Datos inv√°lidos")]
+        [SwaggerResponse(400, "Datos inv·lidos")]
         [SwaggerResponse(404, "No encontrado")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
         {
@@ -185,11 +185,11 @@ namespace RolesApi.Controllers
 
             var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
             if (user == null)
-                return Unauthorized(new { message = "Credenciales inv√°lidas" });
+                return Unauthorized(new { message = "Credenciales inv·lidas" });
 
             var pwCheck = _hasher.VerifyHashedPassword(user, user.Password, dto.Password);
             if (pwCheck != PasswordVerificationResult.Success)
-                return Unauthorized(new { message = "Credenciales inv√°lidas" });
+                return Unauthorized(new { message = "Credenciales inv·lidas" });
 
             var claims = new[] {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
